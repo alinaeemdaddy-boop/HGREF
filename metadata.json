@@ -1,0 +1,6 @@
+{
+  "name": "HRGAF Android GUI Testing Framework",
+  "description": "Hybrid Reinforcement Learning and Genetic Algorithm Framework for Android GUI Testing",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
