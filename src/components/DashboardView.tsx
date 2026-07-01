@@ -203,96 +203,96 @@ export default function DashboardView({ projects, activeProjectId, onNavigateToT
       </div>
 
       {/* Primary Summary Stats Grid */}
-      <div id="stats-grid" className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+      <div id="stats-grid" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {/* 1. Total Projects */}
-        <div className="bg-white border border-slate-200 p-4 flex flex-col justify-between shadow-sm rounded-xl">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Projects</span>
-            <div className="p-1 bg-blue-50 text-blue-600 rounded-lg">
+        <div className="bg-white border border-slate-200/80 p-4 flex flex-col justify-between shadow-sm rounded-2xl hover:shadow-md hover:border-slate-350 transition duration-200">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">Total Projects</span>
+            <div className="p-1 bg-blue-50 text-blue-600 rounded-lg shrink-0">
               <FolderGit2 className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-slate-800 font-mono">{totalProjects}</p>
-            <p className="text-[10px] text-green-600 font-bold mt-0.5">+2 this month</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-800 font-mono tracking-tight">{totalProjects}</p>
+            <p className="text-[10px] text-green-600 font-bold mt-0.5 truncate">+2 this month</p>
           </div>
         </div>
 
         {/* 2. Uploaded APKs */}
-        <div className="bg-white border border-slate-200 p-4 flex flex-col justify-between shadow-sm rounded-xl">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Uploaded APKs</span>
-            <div className="p-1 bg-emerald-50 text-emerald-600 rounded-lg">
+        <div className="bg-white border border-slate-200/80 p-4 flex flex-col justify-between shadow-sm rounded-2xl hover:shadow-md hover:border-slate-350 transition duration-200">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">Uploaded APKs</span>
+            <div className="p-1 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
               <Layers className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-slate-800 font-mono">{uploadedApks}</p>
-            <p className="text-[10px] text-slate-400 mt-0.5">Valid APK binaries</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-800 font-mono tracking-tight">{uploadedApks}</p>
+            <p className="text-[10px] text-slate-400 mt-0.5 truncate">Valid APK binaries</p>
           </div>
         </div>
 
         {/* 3. GUI Components */}
-        <div className="bg-white border border-slate-200 p-4 flex flex-col justify-between shadow-sm rounded-xl cursor-pointer hover:border-blue-300 hover:shadow-md transition" onClick={() => onNavigateToTab('analysis')}>
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">GUI Components</span>
-            <div className="p-1 bg-indigo-50 text-indigo-600 rounded-lg">
+        <div className="bg-white border border-slate-200/80 p-4 flex flex-col justify-between shadow-sm rounded-2xl cursor-pointer hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/5 transition duration-200" onClick={() => onNavigateToTab('analysis')}>
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">GUI Components</span>
+            <div className="p-1 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
               <Play className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-slate-800 font-mono">{guiComponentsCount}</p>
-            <p className="text-[10px] text-blue-600 font-bold mt-0.5 flex items-center gap-0.5 hover:underline">
-              84.2% classified <ChevronRight className="h-3 w-3" />
+            <p className="text-2xl sm:text-3xl font-black text-slate-800 font-mono tracking-tight">{guiComponentsCount}</p>
+            <p className="text-[10px] text-blue-600 font-bold mt-0.5 flex items-center gap-0.5 hover:underline truncate">
+              84.2% classified <ChevronRight className="h-3 w-3 shrink-0" />
             </p>
           </div>
         </div>
 
         {/* 4. Test Cases */}
-        <div className="bg-white border border-slate-200 p-4 flex flex-col justify-between shadow-sm rounded-xl cursor-pointer hover:border-blue-300 hover:shadow-md transition" onClick={() => onNavigateToTab('test-cases')}>
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Test Cases</span>
-            <div className="p-1 bg-sky-50 text-sky-600 rounded-lg">
+        <div className="bg-white border border-slate-200/80 p-4 flex flex-col justify-between shadow-sm rounded-2xl cursor-pointer hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/5 transition duration-200" onClick={() => onNavigateToTab('test-cases')}>
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">Test Cases</span>
+            <div className="p-1 bg-sky-50 text-sky-600 rounded-lg shrink-0">
               <FileCheck2 className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-blue-600 font-mono">{testCasesCount}</p>
-            <p className="text-[10px] text-sky-500 font-semibold mt-0.5 flex items-center gap-0.5 hover:underline">
-              View suite <ChevronRight className="h-3 w-3" />
+            <p className="text-2xl sm:text-3xl font-black text-blue-600 font-mono tracking-tight">{testCasesCount}</p>
+            <p className="text-[10px] text-sky-500 font-semibold mt-0.5 flex items-center gap-0.5 hover:underline truncate">
+              View suite <ChevronRight className="h-3 w-3 shrink-0" />
             </p>
           </div>
         </div>
 
         {/* 5. Coverage Percentage */}
-        <div className="bg-white border border-slate-200 p-4 flex flex-col justify-between shadow-sm rounded-xl">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Test Coverage</span>
-            <div className="p-1 bg-amber-50 text-amber-600 rounded-lg">
+        <div className="bg-white border border-slate-200/80 p-4 flex flex-col justify-between shadow-sm rounded-2xl hover:shadow-md hover:border-slate-350 transition duration-200">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">Test Coverage</span>
+            <div className="p-1 bg-amber-50 text-amber-600 rounded-lg shrink-0">
               <Percent className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-black text-slate-800 font-mono">{coveragePercent.toFixed(0)}%</p>
-            <div className="w-full bg-slate-100 h-1 rounded-full mt-1.5 overflow-hidden">
+            <p className="text-2xl sm:text-3xl font-black text-slate-800 font-mono tracking-tight">{coveragePercent.toFixed(0)}%</p>
+            <div className="w-full bg-slate-100 h-1 rounded-full mt-2 overflow-hidden">
               <div className="bg-blue-500 h-1 rounded-full" style={{ width: `${coveragePercent}%` }} />
             </div>
           </div>
         </div>
 
         {/* 6. Detected Crashes */}
-        <div className="bg-white border border-slate-200 p-4 flex flex-col justify-between shadow-sm rounded-xl">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Crashes Detected</span>
-            <div className="p-1 bg-rose-50 text-rose-600 rounded-lg">
+        <div className="bg-white border border-slate-200/80 p-4 flex flex-col justify-between shadow-sm rounded-2xl hover:shadow-md hover:border-slate-350 transition duration-200">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">Crashes Detected</span>
+            <div className="p-1 bg-rose-50 text-rose-600 rounded-lg shrink-0">
               <Flame className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className={`text-3xl font-black font-mono ${crashesCount > 0 ? 'text-red-600' : 'text-slate-800'}`}>
+            <p className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${crashesCount > 0 ? 'text-red-600' : 'text-slate-800'}`}>
               {crashesCount > 0 ? `0${crashesCount}`.slice(-2) : '00'}
             </p>
-            <p className="text-[10px] text-slate-400 mt-0.5">In current APK version</p>
+            <p className="text-[10px] text-slate-400 mt-0.5 truncate">In current APK version</p>
           </div>
         </div>
       </div>

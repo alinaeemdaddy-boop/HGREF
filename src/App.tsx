@@ -13,10 +13,11 @@ import GaSimulationView from './components/GaSimulationView';
 import TestCasesView from './components/TestCasesView';
 import ReportsView from './components/ReportsView';
 import SettingsView from './components/SettingsView';
-import { ShieldCheck, HelpCircle } from 'lucide-react';
+import { ShieldCheck, HelpCircle, Menu } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   // Auth State
   const [user, setUser] = useState<User | null>(() => {
@@ -171,6 +172,18 @@ export default function App() {
     }));
   };
 
+  const handleAddTestCase = (projectId: string, testCase: TestCase) => {
+    setProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          testCases: [testCase, ...(p.testCases || [])]
+        };
+      }
+      return p;
+    }));
+  };
+
   // If user session is not logged in, render AuthView
   if (!user || !user.isLoggedIn) {
     return <AuthView onLogin={handleLogin} />;
@@ -193,47 +206,77 @@ export default function App() {
   };
 
   return (
-    <div id="hrgaf-workspace" className="flex h-screen bg-slate-50 overflow-hidden font-sans">
-      {/* Sidebar Navigation */}
-      <Sidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        user={user}
-        onLogout={handleLogout}
-        projects={projects}
-        activeProjectId={activeProjectId}
-        setActiveProjectId={setActiveProjectId}
-      />
+    <div id="hrgaf-workspace" className="flex h-screen bg-slate-50 overflow-hidden font-sans relative">
+      {/* Mobile Drawer Backdrop */}
+      {isMobileSidebarOpen && (
+        <button 
+          onClick={() => setIsMobileSidebarOpen(false)}
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 lg:hidden cursor-default w-full h-full border-none outline-none"
+          aria-label="Close menu backdrop"
+        />
+      )}
+
+      {/* Sidebar - Desktop and Mobile adaptive wrapper */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 lg:sticky lg:z-10 lg:flex shrink-0
+        transition-transform duration-300 transform lg:transform-none
+        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setIsMobileSidebarOpen(false); // Close sidebar on tap on mobile
+          }}
+          user={user}
+          onLogout={handleLogout}
+          projects={projects}
+          activeProjectId={activeProjectId}
+          setActiveProjectId={setActiveProjectId}
+        />
+      </div>
 
       {/* Main Container */}
       <main id="main-content-scroller" className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         
         {/* Top Header Panel */}
-        <header id="header-bar" className="bg-white border-b border-slate-200/80 px-8 py-4 shrink-0 flex items-center justify-between sticky top-0 z-10">
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded tracking-wide uppercase">
-                HRGAF Core
-              </span>
-              <span className="text-slate-400 text-xs">/</span>
-              <span className="text-slate-500 text-xs font-semibold">{tabTitles[activeTab]}</span>
+        <header id="header-bar" className="bg-white border-b border-slate-200/80 px-4 md:px-8 py-3.5 shrink-0 flex items-center justify-between sticky top-0 z-10 print:hidden">
+          <div className="flex items-center gap-3.5 min-w-0">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="p-2 -ml-1 hover:bg-slate-100 text-slate-500 hover:text-slate-800 rounded-xl lg:hidden transition shrink-0"
+              title="Open Menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            <div className="space-y-0.5 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold text-blue-600 bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded tracking-wide uppercase shrink-0">
+                  HRGAF Core
+                </span>
+                <span className="text-slate-400 text-[10px] shrink-0">/</span>
+                <span className="text-slate-500 text-[11px] font-semibold truncate">{tabTitles[activeTab]}</span>
+              </div>
+              <h1 className="text-xs md:text-sm font-bold text-slate-800 truncate">
+                Active Project Context:&nbsp;
+                <span className="text-blue-600">{activeProject.name}</span>
+              </h1>
             </div>
-            <h1 className="text-sm font-bold text-slate-800">
-              Active Project Context:&nbsp;
-              <span className="text-blue-600">{activeProject.name}</span>
-            </h1>
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-slate-500">
-            <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span className="font-medium text-slate-700">Safety Verification Guard Active</span>
+          <div className="flex items-center gap-4 text-xs text-slate-500 shrink-0">
+            <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full text-[10px] md:text-xs">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+              <span className="font-medium text-slate-700 hidden sm:inline">Safety Verification Guard Active</span>
+              <span className="font-medium text-slate-700 sm:hidden">Guard Active</span>
             </div>
           </div>
         </header>
 
         {/* Dynamic Views Slot */}
-        <div id="views-viewport" className="p-8 max-w-7xl w-full mx-auto flex-1">
+        <div id="views-viewport" className="p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto flex-1 print:p-0 print:m-0 print:max-w-none">
           {activeTab === 'dashboard' && (
             <DashboardView 
               projects={projects} 
@@ -291,6 +334,7 @@ export default function App() {
             <TestCasesView
               activeProject={activeProject}
               onDeleteTestCase={handleDeleteTestCase}
+              onAddTestCase={handleAddTestCase}
             />
           )}
 

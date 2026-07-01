@@ -22,113 +22,7 @@ export default function ReportsView({ activeProject }: ReportsViewProps) {
   const reportRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = () => {
-    const printContent = reportRef.current?.innerHTML;
-    const originalContent = document.body.innerHTML;
-
-    if (printContent) {
-      // Create a clean printable window
-      const printWindow = window.open('', '_blank');
-      if (printWindow) {
-        printWindow.document.write(`
-          <html>
-            <head>
-              <title>HRGAF Research Report - ${activeProject.name}</title>
-              <style>
-                body {
-                  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                  line-height: 1.5;
-                  color: #1e293b;
-                  padding: 40px;
-                  max-width: 800px;
-                  margin: 0 auto;
-                }
-                h1, h2, h3 {
-                  color: #0f172a;
-                }
-                h1 {
-                  font-size: 24px;
-                  border-bottom: 2px solid #2563eb;
-                  padding-bottom: 10px;
-                }
-                h2 {
-                  font-size: 18px;
-                  border-bottom: 1px solid #e2e8f0;
-                  padding-bottom: 6px;
-                  margin-top: 30px;
-                }
-                .meta-table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-bottom: 20px;
-                }
-                .meta-table td, .meta-table th {
-                  border: 1px solid #cbd5e1;
-                  padding: 8px 12px;
-                  font-size: 13px;
-                }
-                .meta-table th {
-                  background-color: #f8fafc;
-                  text-align: left;
-                }
-                .grid {
-                  display: grid;
-                  grid-template-cols: 1fr 1fr 1fr;
-                  gap: 15px;
-                  margin: 20px 0;
-                }
-                .card {
-                  border: 1px solid #cbd5e1;
-                  border-radius: 8px;
-                  padding: 15px;
-                  text-align: center;
-                  background-color: #f8fafc;
-                }
-                .card-title {
-                  font-size: 11px;
-                  text-transform: uppercase;
-                  color: #64748b;
-                  font-weight: bold;
-                }
-                .card-value {
-                  font-size: 20px;
-                  font-weight: bold;
-                  margin-top: 5px;
-                  color: #1d4ed8;
-                }
-                ul {
-                  padding-left: 20px;
-                }
-                li {
-                  font-size: 13px;
-                  margin-bottom: 6px;
-                }
-                .footer {
-                  margin-top: 50px;
-                  border-top: 1px solid #cbd5e1;
-                  padding-top: 15px;
-                  text-align: center;
-                  font-size: 11px;
-                  color: #64748b;
-                }
-              </style>
-            </head>
-            <body>
-              ${printContent}
-              <div class="footer">
-                <p>HRGAF Research Framework • PhD Thesis Demo • Generated on July 2026</p>
-              </div>
-              <script>
-                window.onload = function() {
-                  window.print();
-                  window.close();
-                }
-              </script>
-            </body>
-          </html>
-        `);
-        printWindow.document.close();
-      }
-    }
+    window.print();
   };
 
   const getTiersCount = (tier: number) => {
@@ -137,7 +31,7 @@ export default function ReportsView({ activeProject }: ReportsViewProps) {
 
   return (
     <div id="reports-view" className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Thesis Executive Reports</h2>
           <p className="text-xs text-slate-400">Generate, compile, and print comprehensive research summary reports for academic presentation</p>
@@ -153,7 +47,7 @@ export default function ReportsView({ activeProject }: ReportsViewProps) {
       </div>
 
       {/* Main Report Document Block (styled as an elegant sheet of paper) */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-md p-8 max-w-4xl mx-auto overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-md p-8 max-w-4xl mx-auto overflow-hidden print:border-none print:shadow-none print:p-0 print:m-0 print:max-w-none">
         
         {/* Printable Area Target */}
         <div ref={reportRef} className="space-y-8">

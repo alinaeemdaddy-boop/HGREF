@@ -13,20 +13,198 @@ import {
   XCircle,
   AlertOctagon,
   ArrowRight,
-  Info
+  Info,
+  Plus
 } from 'lucide-react';
 
 interface TestCasesViewProps {
   activeProject: Project;
   onDeleteTestCase: (projectId: string, testId: string) => void;
+  onAddTestCase: (projectId: string, testCase: TestCase) => void;
 }
 
-export default function TestCasesView({ activeProject, onDeleteTestCase }: TestCasesViewProps) {
+export default function TestCasesView({ activeProject, onDeleteTestCase, onAddTestCase }: TestCasesViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPriority, setSelectedPriority] = useState<string>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
 
   const [viewingTestCase, setViewingTestCase] = useState<TestCase | null>(null);
+
+  // Add custom test case states
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newScreenName, setNewScreenName] = useState('MainActivity');
+  const [newPriority, setNewPriority] = useState<'High' | 'Medium' | 'Low'>('High');
+  const [newRiskLevel, setNewRiskLevel] = useState<'Tier 1' | 'Tier 2' | 'Tier 3' | 'Tier 4'>('Tier 1');
+  const [newExecutionTime, setNewExecutionTime] = useState('1.5s');
+  const [newStatus, setNewStatus] = useState<'Passed' | 'Failed' | 'Blocked'>('Passed');
+  const [newActionsText, setNewActionsText] = useState('Launch App\nClick ExploreButtons\nVerify Navigation State');
+
+  const handleCreateTestCase = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newScreenName) return;
+    
+    const actions = newActionsText
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+
+    const randomNum = Math.floor(10 + Math.random() * 90);
+    const newId = `TC-CUST-${randomNum}`;
+
+    const newTC: TestCase = {
+      testId: newId,
+      screenName: newScreenName,
+      priority: newPriority,
+      riskLevel: newRiskLevel,
+      executionTime: newExecutionTime,
+      status: newStatus,
+      actions: actions.length > 0 ? actions : ['Launch App']
+    };
+
+    onAddTestCase(activeProject.id, newTC);
+    setIsAddModalOpen(false);
+    
+    // Reset form
+    setNewScreenName('MainActivity');
+    setNewPriority('High');
+    setNewRiskLevel('Tier 1');
+    setNewExecutionTime('1.5s');
+    setNewStatus('Passed');
+    setNewActionsText('Launch App\nClick ExploreButtons\nVerify Navigation State');
+  };
+
+  const renderAddModal = () => (
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 shadow-xl relative max-h-[90vh] overflow-y-auto text-left">
+        <button 
+          onClick={() => setIsAddModalOpen(false)}
+          className="absolute right-4 top-4 p-1 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+        >
+          <X className="h-4.5 w-4.5" />
+        </button>
+        
+        <form onSubmit={handleCreateTestCase} className="space-y-4">
+          <div>
+            <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded uppercase tracking-wider">
+              Research Interface
+            </span>
+            <h3 className="text-sm font-bold text-slate-900 mt-1">Design Custom Test Case</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Define a custom sequence path for active context exploration.</p>
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Target Activity/Screen
+              </label>
+              <input
+                type="text"
+                required
+                value={newScreenName}
+                onChange={(e) => setNewScreenName(e.target.value)}
+                placeholder="e.g. MainActivity"
+                className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                  Priority Ranking
+                </label>
+                <select
+                  value={newPriority}
+                  onChange={(e) => setNewPriority(e.target.value as any)}
+                  className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="High">High Priority</option>
+                  <option value="Medium">Medium Priority</option>
+                  <option value="Low">Low Priority</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                  Mapped Risk Tier
+                </label>
+                <select
+                  value={newRiskLevel}
+                  onChange={(e) => setNewRiskLevel(e.target.value as any)}
+                  className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="Tier 1">Tier 1 (Gesture)</option>
+                  <option value="Tier 2">Tier 2 (Runtime)</option>
+                  <option value="Tier 3">Tier 3 (Modal)</option>
+                  <option value="Tier 4">Tier 4 (Context)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                  Execution Time
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newExecutionTime}
+                  onChange={(e) => setNewExecutionTime(e.target.value)}
+                  placeholder="e.g. 1.5s"
+                  className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                  Test Status
+                </label>
+                <select
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value as any)}
+                  className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="Passed">Passed</option>
+                  <option value="Failed">Failed</option>
+                  <option value="Blocked">Blocked</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                Action Steps (One per line)
+              </label>
+              <textarea
+                value={newActionsText}
+                onChange={(e) => setNewActionsText(e.target.value)}
+                rows={4}
+                required
+                className="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
+                placeholder="Launch App&#10;Click Button&#10;Verify State"
+              />
+            </div>
+          </div>
+
+          <div className="pt-2 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(false)}
+              className="px-3.5 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-semibold transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition"
+            >
+              Save Test Case
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 
   const testCases = activeProject.testCases || [];
 
@@ -88,25 +266,54 @@ if __name__ == "__main__":
 
   if (testCases.length === 0) {
     return (
-      <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center space-y-4">
-        <div className="mx-auto h-12 w-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
-          <FileCheck2 className="h-6 w-6" />
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Generated Prioritized Test Suite</h2>
+            <p className="text-xs text-slate-400">Browse, view step-by-step actions, and export Appium script files</p>
+          </div>
+
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shrink-0 shadow-sm"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Custom Test Case</span>
+          </button>
         </div>
-        <div className="max-w-sm mx-auto space-y-1">
-          <h3 className="text-sm font-bold text-slate-800">Test Cases Not Found</h3>
-          <p className="text-xs text-slate-400">
-            Run the <strong>GA Simulation</strong> optimizer on the active project to generate the prioritized test suite.
-          </p>
+
+        <div className="bg-white border border-slate-200 rounded-xl p-10 text-center space-y-4 shadow-sm">
+          <div className="mx-auto h-12 w-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
+            <FileCheck2 className="h-6 w-6" />
+          </div>
+          <div className="max-w-sm mx-auto space-y-2">
+            <h3 className="text-sm font-bold text-slate-800">Test Cases Not Found</h3>
+            <p className="text-xs text-slate-400">
+              Run the <strong>GA Simulation</strong> optimizer on the active project to generate the prioritized test suite automatically, or click "Add Custom Test Case" to design a manual exploration trace.
+            </p>
+          </div>
         </div>
+
+        {isAddModalOpen && renderAddModal()}
       </div>
     );
   }
 
   return (
     <div id="test-cases-view" className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Generated Prioritized Test Suite</h2>
-        <p className="text-xs text-slate-400">Browse, view step-by-step actions, and export Appium script files</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Generated Prioritized Test Suite</h2>
+          <p className="text-xs text-slate-400">Browse, view step-by-step actions, and export Appium script files</p>
+        </div>
+
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shrink-0 shadow-sm"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Add Custom Test Case</span>
+        </button>
       </div>
 
       {/* Filter Toolbar */}
@@ -293,6 +500,8 @@ if __name__ == "__main__":
           </div>
         </div>
       )}
+
+      {isAddModalOpen && renderAddModal()}
 
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
         <Info className="h-4.5 w-4.5 text-blue-600 shrink-0 mt-0.5" />

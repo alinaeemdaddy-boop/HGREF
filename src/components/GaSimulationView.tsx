@@ -119,32 +119,42 @@ export default function GaSimulationView({ activeProject, onUpdateProjectOptimiz
 
   if (!activeProject.apkInfo) {
     return (
-      <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center space-y-4">
-        <div className="mx-auto h-12 w-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
-          <Dna className="h-6 w-6" />
+      <div className="bg-white border border-slate-100 rounded-2xl p-10 text-center space-y-6 shadow-premium max-w-xl mx-auto my-8 animate-fade-in">
+        <div className="mx-auto h-16 w-16 bg-blue-50/50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100/50">
+          <Dna className="h-8 w-8 animate-pulse text-blue-500" />
         </div>
-        <div className="max-w-sm mx-auto space-y-1">
-          <h3 className="text-sm font-bold text-slate-800">APK Not Uploaded</h3>
-          <p className="text-xs text-slate-400">
-            Please upload a target APK first in the <strong>Upload APK</strong> section to start GA test suite generation.
+        <div className="space-y-2">
+          <h3 className="text-base font-bold text-slate-800 tracking-tight font-display">Target APK Not Uploaded</h3>
+          <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+            The Genetic Priority Optimizer requires a valid layout map to initialize sequence chromosomes.
           </p>
+        </div>
+        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100/80 text-[11px] text-slate-500 leading-relaxed text-left">
+          <span className="font-bold text-slate-700 block mb-1">How to proceed:</span>
+          Please navigate to the <strong className="text-blue-600 font-semibold">Upload APK</strong> section in the sidebar menu, select your Android binary, and run the layout extractor to bootstrap active context components.
         </div>
       </div>
     );
   }
 
   return (
-    <div id="ga-simulation-view" className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">Genetic Priority Optimizer</h2>
-          <p className="text-xs text-slate-400">Mutate and splice test sequence chromosomes to prioritize high-risk activities and maximize path coverage</p>
+    <div id="ga-simulation-view" className="space-y-8 animate-fade-in">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
+            <span className="text-[10px] font-bold tracking-wider text-indigo-600 uppercase">Evolutionary Optimizer</span>
+          </div>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight font-display">Genetic Priority Optimizer</h2>
+          <p className="text-xs text-slate-500 max-w-xl">
+            Mutate and splice test sequence chromosomes to prioritize high-risk activities and maximize path coverage.
+          </p>
         </div>
 
         <button
           onClick={handleStartGA}
           disabled={isOptimizing}
-          className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-300 text-white px-4 py-2 rounded-lg text-xs font-semibold transition shrink-0"
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-blue-300 disabled:to-indigo-300 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-blue-500/15 shrink-0"
         >
           {isOptimizing ? (
             <>
@@ -161,37 +171,57 @@ export default function GaSimulationView({ activeProject, onUpdateProjectOptimiz
       </div>
 
       {/* GA Parameter grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Population Size */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Chromosome Population</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{populationSize} sequences</p>
-          <p className="text-[10px] text-slate-400 mt-1">1 chromosome = 1 GUI traversal route</p>
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Chromosome Population</p>
+            <span className="p-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-semibold font-mono">POP</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{populationSize} <span className="text-slate-400 text-sm font-normal">sequences</span></p>
+            <p className="text-[10px] text-slate-400 mt-3 truncate">1 chromosome = 1 GUI traversal route</p>
+          </div>
         </div>
 
         {/* Current Generation */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Current Generation</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{generation} / 100</p>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-            <div className="bg-blue-600 h-full" style={{ width: `${generation}%` }} />
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Current Generation</p>
+            <span className="p-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-semibold font-mono">GEN</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{generation} <span className="text-slate-400 text-sm font-normal">/ 100</span></p>
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-300" style={{ width: `${generation}%` }} />
+            </div>
           </div>
         </div>
 
         {/* Best Fitness */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Best Sequence Fitness</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{(bestFitness * 100).toFixed(1)}%</p>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-            <div className="bg-amber-500 h-full" style={{ width: `${bestFitness * 100}%` }} />
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Best Sequence Fitness</p>
+            <span className="p-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-semibold font-mono font-display">FIT</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{(bestFitness * 100).toFixed(1)}%</p>
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-300" style={{ width: `${bestFitness * 100}%` }} />
+            </div>
           </div>
         </div>
 
         {/* Mutation Rate */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Mutation Probability</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{(mutationRate * 100).toFixed(0)}%</p>
-          <p className="text-[10px] text-slate-400 mt-1">Protects against local optima traps</p>
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Mutation Probability</p>
+            <span className="p-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-semibold font-mono">MUT</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{(mutationRate * 100).toFixed(0)}%</p>
+            <p className="text-[10px] text-slate-400 mt-3 truncate">Avoids local optima traps</p>
+          </div>
         </div>
       </div>
 

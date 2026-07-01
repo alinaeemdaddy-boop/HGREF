@@ -51,7 +51,7 @@ export default function Sidebar({
   ];
 
   return (
-    <aside id="sidebar" className="w-64 bg-white text-slate-800 flex flex-col h-screen sticky top-0 overflow-y-auto border-r border-slate-200">
+    <aside id="sidebar" className="w-64 bg-white text-slate-800 flex flex-col h-screen sticky top-0 overflow-y-auto border-r border-slate-200 print:hidden">
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-100 flex items-center gap-3">
         <div className="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shrink-0 font-bold text-lg shadow-sm">
@@ -94,7 +94,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation List */}
-      <nav id="sidebar-navigation" className="flex-1 py-4 space-y-0.5">
+      <nav id="sidebar-navigation" className="flex-1 py-4 px-3 space-y-1">
         {navItems.map((item) => {
           const IconComponent = item.icon;
           const isActive = activeTab === item.id;
@@ -102,17 +102,17 @@ export default function Sidebar({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center justify-between px-4 py-2.5 text-xs transition-all ${
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all duration-150 ${
                 isActive 
-                  ? 'bg-blue-50 text-blue-700 border-r-4 border-blue-600 font-bold' 
-                  : 'text-slate-500 hover:bg-slate-50 font-medium'
+                  ? 'bg-blue-600 text-white font-semibold shadow-lg shadow-blue-500/15' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'
               }`}
             >
               <div className="flex items-center gap-3">
-                <IconComponent className={`h-4 w-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
+                <IconComponent className={`h-4 w-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
               </div>
-              {isActive && <ChevronRight className="h-3 w-3 text-blue-600" />}
+              {isActive && <ChevronRight className="h-3 w-3 text-white/80" />}
             </button>
           );
         })}

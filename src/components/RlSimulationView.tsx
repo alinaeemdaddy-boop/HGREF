@@ -181,42 +181,52 @@ export default function RlSimulationView({ activeProject, onUpdateProjectTrainin
 
   if (!activeProject.apkInfo) {
     return (
-      <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center space-y-4">
-        <div className="mx-auto h-12 w-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
-          <BrainCircuit className="h-6 w-6" />
+      <div className="bg-white border border-slate-100 rounded-2xl p-10 text-center space-y-6 shadow-premium max-w-xl mx-auto my-8 animate-fade-in">
+        <div className="mx-auto h-16 w-16 bg-blue-50/50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100/50">
+          <BrainCircuit className="h-8 w-8 animate-pulse text-blue-500" />
         </div>
-        <div className="max-w-sm mx-auto space-y-1">
-          <h3 className="text-sm font-bold text-slate-800">APK Not Uploaded</h3>
-          <p className="text-xs text-slate-400">
-            Please upload a target APK first in the <strong>Upload APK</strong> section to start RL agent exploration.
+        <div className="space-y-2">
+          <h3 className="text-base font-bold text-slate-800 tracking-tight font-display">Target APK Not Uploaded</h3>
+          <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+            The reinforcement learning agent requires a valid target APK file structure to construct the action-space state graph.
           </p>
+        </div>
+        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100/80 text-[11px] text-slate-500 leading-relaxed text-left">
+          <span className="font-bold text-slate-700 block mb-1">How to proceed:</span>
+          Please navigate to the <strong className="text-blue-600 font-semibold">Upload APK</strong> section in the sidebar menu, select your Android binary, and run the layout extractor to bootstrap active context components.
         </div>
       </div>
     );
   }
 
   return (
-    <div id="rl-simulation-view" className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">Double-DQN Training Simulator</h2>
-          <p className="text-xs text-slate-400">Train reinforcement learning agent to maximize coverage over the APK action-space graph</p>
+    <div id="rl-simulation-view" className="space-y-8 animate-fade-in">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+            <span className="text-[10px] font-bold tracking-wider text-blue-600 uppercase">Reinforcement Learning Core</span>
+          </div>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight font-display">Double-DQN Training Simulator</h2>
+          <p className="text-xs text-slate-500 max-w-xl">
+            Train a double-deep Q-network agent with customized discount factors to automatically discover coverage-maximizing sequences.
+          </p>
         </div>
 
         {/* Action controls */}
-        <div className="flex gap-2 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={handleStartTraining}
             disabled={isRunning}
-            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-300 text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-blue-300 disabled:to-indigo-300 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-blue-500/15"
           >
-            <Play className="h-4 w-4" />
+            <Play className="h-4 w-4 fill-current" />
             <span>{episode > 0 && episode < 1000 ? 'Resume Agent' : 'Start Agent'}</span>
           </button>
           <button
             onClick={handlePauseTraining}
             disabled={!isRunning}
-            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed text-slate-700 px-3.5 py-2 rounded-lg text-xs font-semibold transition"
+            className="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-50 text-slate-700 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm"
           >
             <Pause className="h-4 w-4" />
             <span>Pause</span>
@@ -224,74 +234,108 @@ export default function RlSimulationView({ activeProject, onUpdateProjectTrainin
           <button
             onClick={handleStopTraining}
             disabled={!isRunning && episode === 0}
-            className="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed text-rose-700 px-3.5 py-2 rounded-lg text-xs font-semibold transition"
+            className="flex items-center gap-2 bg-rose-50/50 border border-rose-100 hover:bg-rose-50 disabled:opacity-40 text-rose-700 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm"
           >
-            <Square className="h-4 w-4" />
+            <Square className="h-3.5 w-3.5 fill-current" />
             <span>Stop & Sync</span>
           </button>
         </div>
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Episode */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Episodes Completed</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{episode} / 1000</p>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-            <div className="bg-blue-600 h-full" style={{ width: `${(episode / 1000) * 100}%` }} />
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Episodes Completed</p>
+            <span className="p-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-semibold font-mono">DQN-EP</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{episode} <span className="text-slate-400 text-sm font-normal">/ 1000</span></p>
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-300" style={{ width: `${(episode / 1000) * 100}%` }} />
+            </div>
           </div>
         </div>
 
         {/* Current Reward */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Cumulative Reward Value</p>
-          <p className={`text-3xl font-black font-mono mt-2 ${reward >= 0 ? 'text-green-600' : 'text-rose-600'}`}>
-            {reward > 0 ? `+${reward}` : reward}
-          </p>
-          <p className="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
-            <TrendingUp className="h-3 w-3" /> State value convergence parameter
-          </p>
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Cumulative Reward</p>
+            <span className="p-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-semibold font-mono">REW</span>
+          </div>
+          <div>
+            <p className={`text-2xl font-bold font-display mt-1.5 tracking-tight ${reward >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+              {reward > 0 ? `+${reward}` : reward}
+            </p>
+            <p className="text-[10px] text-slate-400 mt-3 flex items-center gap-1.5">
+              <TrendingUp className="h-3.5 w-3.5 text-emerald-500 shrink-0 animate-pulse" />
+              <span>Value convergence locked</span>
+            </p>
+          </div>
         </div>
 
         {/* Coverage progress */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Calculated Node Coverage</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{coverage.toFixed(1)}%</p>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-            <div className="bg-amber-500 h-full" style={{ width: `${coverage}%` }} />
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Node Coverage</p>
+            <span className="p-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-semibold font-mono">COV</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{coverage.toFixed(1)}%</p>
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-300" style={{ width: `${coverage}%` }} />
+            </div>
           </div>
         </div>
 
         {/* Epsilon Exploration rate */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-sm">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Epsilon Decay Rate</p>
-          <p className="text-3xl font-black text-slate-800 font-mono mt-2">{(epsilon * 100).toFixed(0)}%</p>
-          <p className="text-[10px] text-slate-400 mt-1.5">
-            {epsilon > 0.5 ? 'Exploring new state links' : 'Exploiting learned Q-values'}
-          </p>
+        <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-premium hover:shadow-premium-hover transition duration-300 flex flex-col justify-between h-[125px]">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Epsilon Decay</p>
+            <span className="p-1 bg-violet-50 text-violet-600 rounded-lg text-[10px] font-semibold font-mono">EPS</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800 font-display mt-1.5 tracking-tight">{(epsilon * 100).toFixed(0)}%</p>
+            <p className="text-[10px] text-slate-400 mt-3 flex items-center gap-1.5">
+              <span className={`h-1.5 w-1.5 rounded-full ${epsilon > 0.5 ? 'bg-violet-500 animate-ping' : 'bg-indigo-500'}`} />
+              <span className="truncate">{epsilon > 0.5 ? 'Exploring states' : 'Exploiting Q-values'}</span>
+            </p>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Terminal/Log view */}
-        <div className="lg:col-span-2 bg-slate-950 rounded-xl border border-slate-800 flex flex-col h-[320px] overflow-hidden shadow-md">
-          <div className="bg-slate-900 px-4 py-2 flex items-center justify-between border-b border-slate-800">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Terminal className="h-4 w-4 text-blue-500" /> DDQN State exploration console
-            </span>
-            <span className="text-[9px] font-mono text-emerald-500">SYSTEM: ACTIVE</span>
+        <div className="lg:col-span-2 bg-slate-950 rounded-2xl border border-slate-800 flex flex-col h-[360px] overflow-hidden shadow-xl">
+          <div className="bg-slate-900/95 px-4 py-3.5 flex items-center justify-between border-b border-slate-800/80">
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 shrink-0" />
+              </div>
+              <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider ml-2 flex items-center gap-1.5">
+                <Terminal className="h-3.5 w-3.5 text-blue-500 shrink-0" /> DDQN State Exploration Console
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`h-1.5 w-1.5 rounded-full ${isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
+              <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">{isRunning ? 'Running' : 'Standby'}</span>
+            </div>
           </div>
           
-          <div className="p-4 flex-1 overflow-y-auto space-y-1.5 font-mono text-[10px] text-slate-300">
+          <div className="p-4 flex-1 overflow-y-auto space-y-2 font-mono text-[10px] text-slate-300 scrollbar-thin">
             {logs.map((log, idx) => (
               <div 
                 key={idx} 
-                className={`${
-                  log.includes('[CRASH') ? 'text-rose-400 bg-rose-950/20 px-1 py-0.5 rounded' :
-                  log.includes('[SYSTEM]') ? 'text-blue-400' : 'text-slate-300'
+                className={`p-1.5 rounded-lg leading-relaxed ${
+                  log.includes('[CRASH') ? 'text-rose-400 bg-rose-950/30 border border-rose-900/40 px-2' :
+                  log.includes('[SYSTEM]') ? 'text-sky-400 bg-sky-950/20 border border-sky-900/20 px-2' : 
+                  'text-slate-300 hover:bg-slate-900/40 transition px-2'
                 }`}
               >
+                <span className="text-slate-500 mr-2 select-none">{(idx + 1).toString().padStart(3, '0')}</span>
                 {log}
               </div>
             ))}
@@ -300,38 +344,43 @@ export default function RlSimulationView({ activeProject, onUpdateProjectTrainin
         </div>
 
         {/* Side Panel: Agent Policy details */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Agent Policy Parameters</h3>
-          
-          <div className="space-y-3.5 text-xs text-slate-600">
-            <div className="flex justify-between pb-2 border-b border-slate-50">
-              <span className="text-slate-400">Neural Network Model</span>
-              <strong className="text-slate-800 font-semibold">Double-DQN (DDQN)</strong>
-            </div>
-            <div className="flex justify-between pb-2 border-b border-slate-50">
-              <span className="text-slate-400">Discount Factor (Gamma)</span>
-              <strong className="text-slate-800 font-semibold font-mono">0.99</strong>
-            </div>
-            <div className="flex justify-between pb-2 border-b border-slate-50">
-              <span className="text-slate-400">Learning Rate (Alpha)</span>
-              <strong className="text-slate-800 font-semibold font-mono">0.001</strong>
-            </div>
-            <div className="flex justify-between pb-2 border-b border-slate-50">
-              <span className="text-slate-400">Experience Replay Buffer</span>
-              <strong className="text-slate-800 font-semibold font-mono">50,000 steps</strong>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Detected Exceptions</span>
-              <strong className={`font-semibold font-mono ${detectedCrashes > 0 ? 'text-rose-600' : 'text-slate-800'}`}>
-                {detectedCrashes} Crashes
-              </strong>
+        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-premium flex flex-col justify-between space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-display border-b border-slate-50 pb-2">Agent Policy Parameters</h3>
+            
+            <div className="space-y-3.5 text-xs text-slate-600">
+              <div className="flex justify-between pb-2 border-b border-slate-50">
+                <span className="text-slate-400">Neural Network Model</span>
+                <strong className="text-slate-800 font-semibold font-display">Double-DQN</strong>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-50">
+                <span className="text-slate-400">Discount Factor (Gamma)</span>
+                <strong className="text-slate-800 font-semibold font-mono">0.99</strong>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-50">
+                <span className="text-slate-400">Learning Rate (Alpha)</span>
+                <strong className="text-slate-800 font-semibold font-mono">0.001</strong>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-50">
+                <span className="text-slate-400">Experience Replay Buffer</span>
+                <strong className="text-slate-800 font-semibold font-mono">50k steps</strong>
+              </div>
+              <div className="flex justify-between pb-1">
+                <span className="text-slate-400">Exceptions Caught</span>
+                <strong className={`font-semibold font-mono ${detectedCrashes > 0 ? 'text-rose-600' : 'text-slate-800'}`}>
+                  {detectedCrashes} Crashes
+                </strong>
+              </div>
             </div>
           </div>
 
-          <div className="bg-amber-50 text-amber-900 p-3 rounded-lg border border-amber-100 text-[11px] leading-relaxed flex gap-2">
+          <div className="bg-amber-50/40 text-amber-900 p-4 rounded-xl border border-amber-100/50 text-[11px] leading-relaxed flex gap-2.5">
             <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <strong>Coverage limits:</strong> Reinforcement learning agents excel at surface-level exploration but are frequently blocked by modal dialogues or input sequence logic gates. To bypass these, the HRGAF framework uses a <strong>Genetic Algorithm (GA)</strong> to optimize and seed target state populations.
+            <div className="space-y-1">
+              <span className="font-bold text-amber-800 block">Coverage Limits Info</span>
+              <p className="text-amber-900/80">
+                Double-DQN excels at deep-state exploration but can be stalled by user input sequence loops. Use the <strong>Genetic Algorithm (GA)</strong> mode to optimize state populating sequences.
+              </p>
             </div>
           </div>
         </div>
